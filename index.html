@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NITW Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <section id="login-page" class="auth-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-box">C</div>
+                <h2>Welcome to NITW Connect</h2>
+                <p>Sign in to the database</p>
+            </div>
+            <form id="login-form">
+                <div class="input-field">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="student@campus.edu" required>
+                </div>
+                <div class="input-field">
+                    <label>Password</label>
+                    <input type="password" id="pwd" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary" id="login-btn" style="width: 100%;">Enter Ecosystem</button>
+                <p id="auth-error" style="color: red; font-size: 0.8rem; margin-top: 10px; text-align: center;"></p>
+            </form>
+        </div>
+    </section>
+
+    <div id="main-app" class="app-container">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="logo-icon">C</span>
+                <h3>NITW Connect</h3>
+            </div>
+            <nav class="side-nav">
+                <div class="nav-section-title">Academics</div>
+                <a href="#" class="nav-item active" data-section="vault"><i data-lucide="book-open"></i> Academic Vault</a>
+                <a href="#" class="nav-item" data-section="forum"><i data-lucide="message-square"></i> Doubt Forum <span class="badge">3</span></a>
+                
+                <div class="nav-section-title">Community</div>
+                <a href="#" class="nav-item" data-section="whisper"><i data-lucide="shield-check"></i> Whisper Network</a>
+            </nav>
+            
+            <div class="user-profile-container">
+                <div class="user-info">
+                    <div class="user-avatar" id="sidebar-avatar">S</div>
+                    <div class="user-name" id="sidebar-username">Student</div>
+                </div>
+                <button class="logout-btn" id="logout-btn" title="Logout">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <main class="content-area" id="content-container">
+            
+            <section id="vault" class="content-section">
+                <div class="section-header">
+                    <div>
+                        <h1>Academic Vault</h1>
+                        <p style="color: var(--slate); margin-top: 5px;">Upload and download resources.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 30px; background: var(--light-slate); border: 2px dashed var(--border);">
+                    <h3>Upload a Document</h3>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <input type="text" id="file-title" placeholder="Document Title (e.g., DSA Notes)" class="basic-input" style="flex: 1;">
+                        <input type="text" id="course-code" placeholder="Course Code" class="basic-input" style="width: 120px;">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
+                        <input type="file" id="file-upload" accept=".pdf,.doc,.docx" class="basic-input" style="flex: 1;">
+                        <button class="btn-primary" id="upload-btn">Upload to Vault</button>
+                    </div>
+                    <p id="upload-status" style="font-size: 0.85rem; margin-top: 10px; color: var(--primary);"></p>
+                </div>
+
+                <div id="vault-list"></div>
+            </section>
+
+            <section id="forum" class="content-section hidden">
+                <div class="section-header">
+                    <div>
+                        <h1>Doubt Forum</h1>
+                        <p style="color: var(--slate); margin-top: 5px;">Ask questions, get answers. Vote the best ones up.</p>
+                    </div>
+                </div>
+                
+                <div id="forum-main-view">
+                    <div class="controls-row">
+                        <div class="search-container">
+                            <div class="search-box">
+                                <i data-lucide="search"></i>
+                                <input type="text" placeholder="Search questions by topic, subject...">
+                            </div>
+                            <button class="btn-primary">Search</button>
+                            <button class="btn-secondary" onclick="openModal('filter-modal')" style="display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="filter" style="width: 18px;"></i> Filter
+                            </button>
+                        </div>
+                        
+                        <div class="pills-container" id="forum-filters">
+                            <button class="filter-pill active" data-filter="All">All</button>
+                            <button class="filter-pill" data-filter="DSA">DSA</button>
+                            <button class="filter-pill" data-filter="Electronics">Electronics</button>
+                            <button class="filter-pill" data-filter="Mathematics">Mathematics</button>
+                            <button class="filter-pill" data-filter="Physics">Physics</button>
+                        </div>
+                    </div>
+
+                    <div id="forum-list">
+                        </div>
+                    
+                    <button class="fab" onclick="openModal('question-modal')" title="Add Question">
+                        <i data-lucide="plus"></i>
+                    </button>
+                </div>
+
+                <div id="forum-thread-view" class="hidden">
+                    <button class="btn-secondary" id="back-to-forum" style="margin-bottom: 20px;">
+                        <i data-lucide="arrow-left" style="width: 16px; display: inline-block; vertical-align: middle;"></i> Back to Questions
+                    </button>
+                    
+                    <div id="thread-original-question">
+                        </div>
+
+                    <h3 style="margin: 30px 0 15px 0; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Discussion</h3>
+                    
+                    <div id="thread-answers-list">
+                        </div>
+
+                    <div class="card" style="margin-top: 20px; background: var(--light-slate);">
+                        <textarea id="answer-text" class="basic-input" placeholder="Write your answer or explanation here..." style="min-height: 100px; resize: vertical; margin-bottom: 10px;"></textarea>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button class="btn-primary" id="post-answer-btn">Post Reply</button>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <section id="whisper" class="content-section hidden">
+                <div class="section-header">
+                    <div>
+                        <h1>Whisper Network</h1>
+                        <p style="color: var(--slate); margin-top: 5px;">Anonymous insider tips.</p>
+                    </div>
+                </div>
+
+                <div class="whisper-box">
+                    <textarea id="whisper-text" placeholder="Share a tip or campus insight anonymously..."></textarea>
+                    <div class="whisper-actions">
+                        <span>100% anonymous • visible to everyone</span>
+                        <button class="btn-primary" id="post-whisper-btn">Post Whisper</button>
+                    </div>
+                </div>
+
+                <div id="whisper-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="filter-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Filter Questions</h2>
+                <button class="close-modal" onclick="closeModal('filter-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="input-field">
+                <label>Branch</label>
+                <select id="f-branch" class="basic-input">
+                    <option value="All">All Branches</option>
+                    <option value="CSE">Computer Science (CSE)</option>
+                    <option value="ECE">Electronics (ECE)</option>
+                    <option value="MECH">Mechanical (MECH)</option>
+                    <option value="CIVIL">Civil (CIVIL)</option>
+                </select>
+            </div>
+            <div class="input-field">
+                <label>Subject / Topic</label>
+                <select id="f-topic" class="basic-input">
+                    <option value="All">All Topics</option>
+                    <option value="DSA">Data Structures (DSA)</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                </select>
+            </div>
+            <div class="input-field">
+                <label>Status</label>
+                <select id="f-status" class="basic-input">
+                    <option value="All">Any Status</option>
+                    <option value="Solved">Solved</option>
+                    <option value="Unsolved">Unsolved</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button class="btn-secondary" onclick="resetForumFilters()">Clear Filters</button>
+                <button class="btn-primary" id="apply-forum-filters">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="question-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Post a Question</h2>
+                <button class="close-modal" onclick="closeModal('question-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="input-field">
+                <label>Title</label>
+                <input type="text" id="q-title" class="basic-input" placeholder="What's your doubt?">
+            </div>
+            <div class="input-field">
+                <label>Description</label>
+                <textarea id="q-desc" class="basic-input" placeholder="Elaborate on your problem..." style="min-height: 100px; resize: vertical;"></textarea>
+            </div>
+            <div class="input-field" style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label>Branch</label>
+                    <select id="q-branch" class="basic-input">
+                        <option value="CSE">CSE</option>
+                        <option value="ECE">ECE</option>
+                        <option value="MECH">MECH</option>
+                        <option value="CIVIL">CIVIL</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label>Topic</label>
+                    <select id="q-topic" class="basic-input">
+                        <option value="DSA">DSA</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Physics">Physics</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn-secondary" onclick="closeModal('question-modal')">Cancel</button>
+                <button class="btn-primary" id="save-question">Post Question</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
