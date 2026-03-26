@@ -422,6 +422,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (error) return console.error('Error fetching questions:', error);
 
+        const badge = document.getElementById('forum-badge');
+        if (badge) {
+            badge.innerText = questions.length;
+            badge.style.display = questions.length > 0 ? 'block' : 'none';
+        }
+
         allQuestions = questions; 
         const listContainer = document.getElementById('forum-list');
         if(!silent) listContainer.innerHTML = ''; 
