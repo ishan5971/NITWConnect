@@ -16,7 +16,30 @@
 body { background: var(--bg); color: var(--dark); overflow: hidden; }
 
 .hidden { display: none !important; }
+.auth-toggle {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: var(--slate);
+}
 
+.auth-toggle a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
+.error-text {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin-top: 15px;
+    text-align: center;
+    min-height: 1.2em;
+}
 .auth-screen {
     height: 100vh;
     display: flex;
@@ -183,3 +206,62 @@ body { background: var(--bg); color: var(--dark); overflow: hidden; }
 .modal-header h2 { font-size: 1.25rem; }
 .close-modal { background: none; border: none; color: var(--slate); cursor: pointer; }
 .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+
+[data-theme="dark"] {
+    --bg: #0f172a;
+    --white: #1e293b;
+    --dark: #f8fafc;
+    --light-slate: #334155;
+    --border: #334155;
+    --slate: #94a3b8;
+}
+
+.theme-toggle-btn {
+    background: var(--light-slate);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    transition: all 0.2s;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+body {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+[data-theme="dark"] {
+    --bg: #0f172a;
+    --white: #1e293b;
+    --dark: #f8fafc;
+    --slate: #94a3b8;
+    --light-slate: #334155;
+    --border: #334155;
+}
+
+.theme-toggle-btn {
+    background: var(--light-slate);
+    border: 1px solid var(--border);
+    color: var(--dark);
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--border);
+}
